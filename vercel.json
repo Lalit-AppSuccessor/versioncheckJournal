@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/version-checker.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
