@@ -1,12 +1,13 @@
 import fetch from "node-fetch";
+import fs from "fs";
 
 // === CONFIG ===
 const PACKAGE_NAME = "com.journalit.notebook.diaryapp";
 const CHAT_WEBHOOK =
   "https://chat.googleapis.com/v1/spaces/AAQAJe9l_mk/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=kkMVUo3_6QtXzFRxcsuqeaaPrHVrulhwBcuUdzGQE0Q";
+const CURRENT_VERSION = "1.0.14"; // static base version
 
-const CURRENT_VERSION = "1.0.12"; // static base version
-
+// === MAIN FUNCTION ===
 export default async function handler(req, res) {
   try {
     const url = `https://play.google.com/store/apps/details?id=${PACKAGE_NAME}&hl=en&gl=US`;
@@ -14,45 +15,63 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error("❌ Play Store fetch failed:", response.status);
-      return res
-        .status(500)
-        .json({ error: `Play Store fetch failed: ${response.status}` });
+      return;
     }
 
     const html = await response.text();
-    const match = html.match(/Current Version.*?<span[^>]*>([\d.]+)<\/span>/s);
-    const version = match ? match[1].trim() : null;
+
+    // === Step 1: Look for structured JSON with version info ===
+    let version = null;
+
+    // Pattern for embedded JSON (contains the version in nested arrays)
+    const jsonMatch = html.match(/\[\[\["([\d.]+)"\]\],\[\[\[35\]\]/);
+    if (jsonMatch && jsonMatch[1]) {
+      version = jsonMatch[1].trim();
+      console.log("🔍 Found version from structured data JSON:", version);
+    }
+
+    // Step 2: Fallback patterns if not found
+    if (!version) {
+      const regexes = [
+        /"version":"([\d.]+)"/i,
+        /Version[:\s"]+(\d+\.\d+\.\d+)/i,
+        /Current\s*Version.*?<span[^>]*>([\d.]+)<\/span>/is,
+      ];
+      for (const r of regexes) {
+        const m = html.match(r);
+        if (m && m[1]) {
+          version = m[1].trim();
+          console.log(`🔍 Found version with fallback regex: ${r}`);
+          break;
+        }
+      }
+    }
 
     if (!version) {
       console.error("❌ Could not find version text in Play Store HTML");
-      return res
-        .status(500)
-        .json({ error: "Could not find version in Play Store HTML" });
+      return;
     }
 
     console.log(`ℹ️ Play Store version found: ${version}`);
 
     if (version !== CURRENT_VERSION) {
       console.log(`🚀 New version detected: ${version}`);
+
+      const payload = {
+        text: `🚀 *Journal App Update!* Version *${version}* is now live on Play Store (previous: ${CURRENT_VERSION}).`,
+      };
+
       await fetch(CHAT_WEBHOOK, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: `🚀 *Journal App Update!* Version *${version}* is now live on Play Store (previous: ${CURRENT_VERSION}).`,
-        }),
+        body: JSON.stringify(payload),
       });
+
       console.log("✅ Notification sent to Google Chat");
     } else {
       console.log(`✅ No update. Still version ${CURRENT_VERSION}`);
     }
-
-    return res.status(200).json({
-      playstoreVersion: version,
-      currentVersion: CURRENT_VERSION,
-      updated: version !== CURRENT_VERSION,
-    });
   } catch (err) {
     console.error("💥 Fatal error:", err);
-    return res.status(500).json({ error: err.message });
   }
 }

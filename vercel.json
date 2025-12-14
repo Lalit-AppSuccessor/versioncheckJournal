@@ -1,10 +1,7 @@
 {
   "functions": {
-    "api/versionChecker.js": {
-      "runtime": "nodejs20.x",
-      "memory": 128,
-      "maxDuration": 10
+    "api/version-checker.js": {
+      "runtime": "nodejs18.x"
     }
-  },
-  "regions": ["iad1"]
+  }
 }
