@@ -68,10 +68,12 @@ export default async function handler(req, res) {
       });
 
       console.log("✅ Notification sent to Google Chat");
+      res.status(200).json({ status: "Ok" });
     } else {
       console.log(`✅ No update. Still version ${CURRENT_VERSION}`);
     }
   } catch (err) {
     console.error("💥 Fatal error:", err);
+    res.status(500).json({ error: "error" });
   }
 }
