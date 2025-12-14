@@ -1,12 +1,15 @@
 {
-  "functions": {
-    "api/versionChecker.js": {
-      "runtime": "nodejs20.x",
-      "memory": 128,
-      "maxDuration": 10
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/versionChecker.js",
+      "use": "@vercel/node@2.9.0"
     }
-  },
-  "regions": [
-    "iad1"
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/versionChecker.js"
+    }
   ]
 }
