@@ -1,16 +1,7 @@
 {
   "name": "ping-journalversion",
   "version": "1.0.0",
-  "main": "index.js",
   "type": "module",
-  "scripts": {
-    "start": "node api/version-checker.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "node-fetch": "^3.3.2"
   }
