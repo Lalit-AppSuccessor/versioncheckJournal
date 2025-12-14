@@ -4,7 +4,7 @@ import fs from "fs";
 // === CONFIG ===
 const PACKAGE_NAME = "com.journalit.notebook.diaryapp";
 const CHAT_WEBHOOK =
-  "https://chat.googleapis.com/v1/spaces/AAQAJe9l_mk/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=kkMVUo3_6QtXzFRxcsuqeaaPrHVrulhwBcuUdzGQE0Q";
+  "https://chat.googleapis.com/v1/spaces/AAQASlHkdFk/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=spcAsy-lItg1uxHnA_U7WOHKupX9GoG_ZPat3v0pUmE";
 const CURRENT_VERSION = "1.0.14"; // static base version
 
 // === MAIN FUNCTION ===
