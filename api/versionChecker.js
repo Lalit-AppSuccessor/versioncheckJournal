@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 const PACKAGE_NAME = "com.journalit.notebook.diaryapp";
 const CHAT_WEBHOOK =
   "https://chat.googleapis.com/v1/spaces/AAQASlHkdFk/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=spcAsy-lItg1uxHnA_U7WOHKupX9GoG_ZPat3v0pUmE";
-const CURRENT_VERSION = "1.0.13"; // static base version
+const CURRENT_VERSION = "2.0.5"; // static base version
 
 // === MAIN FUNCTION ===
 export default async function handler(req, res) {
